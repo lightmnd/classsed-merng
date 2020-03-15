@@ -1,10 +1,13 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Card, Icon, Label, Button, Image } from 'semantic-ui-react';
 import moment from 'moment';
 import { Link } from 'react-router-dom';
+import { AuthContext } from './../context/auth'
 
 function PostCard({ post: { id, body, createdAt, username, comments, likes, likeCount, commentCount } }) {
 	//const { id, body, createdAt, username, comments, likes, likeCount, commentCount } = props.post;
+
+	const { user } = useContext(AuthContext)
 
 	function likePost() {
 		console.log('like!');
@@ -24,7 +27,7 @@ function PostCard({ post: { id, body, createdAt, username, comments, likes, like
 						src='https://react.semantic-ui.com/images/avatar/large/steve.jpg'
 					/>
 					<Card.Header>{username}</Card.Header>
-					<Card.Meta as={Link} to={`/posts/${id}`}>
+					<Card.Meta as={Link} to={user != null ? `/posts/${id}` : '/login'}>
 						{moment(createdAt).fromNow()}
 					</Card.Meta>
 					<Card.Description>{body}</Card.Description>

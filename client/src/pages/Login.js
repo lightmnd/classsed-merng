@@ -10,8 +10,6 @@ function Login(props) {
 
     const context = useContext(AuthContext)
 
-    console.log('>>>>>', context)
-
     const initialState = {
         username: '',
         password: '',

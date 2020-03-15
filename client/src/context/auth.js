@@ -13,7 +13,6 @@ if (localStorage.getItem('jwtToken')) {
     } else {
         initialState.user = decodeToken;
     }
-
 }
 
 const AuthContext = createContext({
