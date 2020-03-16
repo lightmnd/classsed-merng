@@ -2,7 +2,7 @@ import React, { useState, useContext, useEffect } from 'react';
 import { useQuery } from '@apollo/react-hooks';
 import { FETCH_POSTS_QUERY } from './../queries/FETCH_POSTS_QUERY';
 import UIWrapper from './../UIWrapper';
-import { Grid, Button, Label, Icon, Form } from 'semantic-ui-react';
+import { Grid, Button, Label, Icon, Form, Divider } from 'semantic-ui-react';
 import PostCard from './../components/PostCard';
 import PostForm from './../components/PostForm';
 import { AuthContext } from './../context/auth'
@@ -13,6 +13,7 @@ function Home() {
 	const [formState, setFormState] = useState(false)
 	const { loading, error, data } = useQuery(FETCH_POSTS_QUERY);
 	const [posts, setPosts] = useState([]);
+	const [submitted, setSubmitted] = useState(false);
 	useEffect(() => {
 		if (data) {
 			setPosts(data.getPosts);
@@ -26,21 +27,37 @@ function Home() {
 	if (error) return <h1>Someting went wrong :(</h1>
 	if (loading) return <h1>loading...</h1>
 	if (data) {
+		console.log(submitted)
 		return (
 			<UIWrapper>
 				<Grid columns={3}>
 					<Grid.Row className={'page-title'}>
 						<div>
-							<Button as='div' labelPosition='right' onClick={openForm}>
-								<Label basic color='teal'>
-									<Icon name='pencil alternate' />
-									Create new Post!
-								</Label>
-							</Button>
+							{data.getPosts.length > posts.length && !formState ? (
+								<Button as='div' labelPosition='right' onClick={openForm}>
+									<Label basic color='teal'>
+										<Icon name='write alternate' />
+										<p>Create new Post!</p>
+									</Label>
+								</Button>
+							) : (
+									<Button as='div' labelPosition='right' onClick={openForm}>
+										<Label basic color='teal'>
+											<Icon name='close alternate' />
+											<p>&nbsp; Close</p>
+										</Label>
+									</Button>
+								)}
 							{user && formState && (
-								<Grid.Column>
-									<PostForm />
-								</Grid.Column>
+								<>
+									<Divider horizontal>
+										<Icon name='write alternate' />
+										<p>&nbsp; Write your post...</p>
+									</Divider>
+									<Grid.Column>
+										<PostForm submitted={submitted} />
+									</Grid.Column>
+								</>
 							)}
 						</div>
 						<h1>Recent Posts</h1>
@@ -49,8 +66,8 @@ function Home() {
 						{loading ? (
 							<h1>loading posts...</h1>
 						) : (
-							posts &&
-							posts
+								posts &&
+								posts
 									//.slice(0, 4)
 									.map(post => (
 										<Grid.Column key={`${post.id}`} style={{ marginBottom: 25 }}>
