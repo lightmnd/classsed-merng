@@ -9,7 +9,7 @@ import { AuthContext } from './../context/auth'
 
 function Home() {
 	const { user } = useContext(AuthContext)
-	const { submitted } = useContext(SubmittedCtx)
+	//const { submitted } = useContext(SubmittedCtx)
 
 	const [formState, setFormState] = useState(false)
 	const { loading, error, data } = useQuery(FETCH_POSTS_QUERY);
