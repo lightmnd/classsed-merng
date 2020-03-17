@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, createContext } from 'react';
 import { Form, Card, Icon, Label, Button, Image } from 'semantic-ui-react';
 import moment from 'moment';
 import { Link } from 'react-router-dom';
@@ -8,9 +8,9 @@ import { useForm } from './../utils/hooks'
 import gql from 'graphql-tag';
 import { FETCH_POSTS_QUERY } from './../queries/FETCH_POSTS_QUERY';
 
-function PostForm(props) {
+const SubmittedCtx = createContext({})
 
-	console.log(props)
+function PostForm(props) {
 	const { values, onChange, onSubmit } = useForm(createPostCallback, {
 		body: ''
 	})
@@ -28,15 +28,16 @@ function PostForm(props) {
 			});
 			values.body = '';
 		},
-		refetchQueries: refetchPosts => [{query: FETCH_POSTS_QUERY}]
+		refetchQueries: refetchPosts => [{ query: FETCH_POSTS_QUERY }]
 	});
 
 
+	const [submitted, setSubmitted] = useState(false)
 	function createPostCallback() {
 		createPost()
+		setSubmitted(true)
 	}
-
-	return (
+	return (<>
 		<Form onSubmit={onSubmit} className={'post-form'}>
 			<Form.Field>
 				<Form.Input
@@ -47,7 +48,17 @@ function PostForm(props) {
 				/>
 				<Button type='submit' color='teal'>Create</Button>
 			</Form.Field>
-		</Form>)
+		</Form>
+		{error &&
+			<div className="ui error message">
+				<ul>
+					<div></div>
+					{console.log(error)}
+				</ul>
+			</div>
+		}
+	</>
+	)
 }
 
 const CREATE_POST = gql`
@@ -74,4 +85,4 @@ likePost {
 
 */
 
-export default PostForm;
+export { SubmittedCtx, PostForm };

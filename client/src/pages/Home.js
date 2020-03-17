@@ -4,16 +4,16 @@ import { FETCH_POSTS_QUERY } from './../queries/FETCH_POSTS_QUERY';
 import UIWrapper from './../UIWrapper';
 import { Grid, Button, Label, Icon, Form, Divider } from 'semantic-ui-react';
 import PostCard from './../components/PostCard';
-import PostForm from './../components/PostForm';
+import { PostForm, SubmittedCtx } from './../components/PostForm';
 import { AuthContext } from './../context/auth'
 
 function Home() {
 	const { user } = useContext(AuthContext)
+	const { submitted } = useContext(SubmittedCtx)
 
 	const [formState, setFormState] = useState(false)
 	const { loading, error, data } = useQuery(FETCH_POSTS_QUERY);
 	const [posts, setPosts] = useState([]);
-	const [submitted, setSubmitted] = useState(false);
 	useEffect(() => {
 		if (data) {
 			setPosts(data.getPosts);
@@ -27,13 +27,12 @@ function Home() {
 	if (error) return <h1>Someting went wrong :(</h1>
 	if (loading) return <h1>loading...</h1>
 	if (data) {
-		console.log(submitted)
 		return (
 			<UIWrapper>
 				<Grid columns={3}>
 					<Grid.Row className={'page-title'}>
 						<div>
-							{data.getPosts.length > posts.length && !formState ? (
+							{data.getPosts.length > posts.length ? (
 								<Button as='div' labelPosition='right' onClick={openForm}>
 									<Label basic color='teal'>
 										<Icon name='write alternate' />
@@ -48,14 +47,14 @@ function Home() {
 										</Label>
 									</Button>
 								)}
-							{user && formState && (
+							{user && (
 								<>
 									<Divider horizontal>
 										<Icon name='write alternate' />
 										<p>&nbsp; Write your post...</p>
 									</Divider>
 									<Grid.Column>
-										<PostForm submitted={submitted} />
+										<PostForm />
 									</Grid.Column>
 								</>
 							)}

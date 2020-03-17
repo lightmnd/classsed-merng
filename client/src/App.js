@@ -9,18 +9,22 @@ import "semantic-ui-css/semantic.min.css";
 import "./App.css";
 import { AuthProvider } from './context/auth'
 import AuthRouter from './utils/AuthRouter'
+import { SubmittedCtx } from './components/PostForm';
+
 
 function App() {
   return (
     <AuthProvider>
-      <Router>
-        <Container>
-          <MenuBar />
-          <Route exact path="/" component={Home} />
-          <AuthRouter exact path="/login" component={Login} />
-          <AuthRouter exact path="/register" component={Register} />
-        </Container>
-      </Router>
+      <SubmittedCtx.Provider value={'okkkkkkkkk'}>
+        <Router>
+          <Container>
+            <MenuBar />
+            <Route exact path="/" component={Home} />
+            <AuthRouter exact path="/login" component={Login} />
+            <AuthRouter exact path="/register" component={Register} />
+          </Container>
+        </Router>
+        </SubmittedCtx.Provider>
     </AuthProvider>
   );
 }
