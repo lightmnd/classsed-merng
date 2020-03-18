@@ -15,6 +15,7 @@ function PostForm(props) {
 		body: ''
 	})
 
+	//const [errors, setError] = useState({})
 	const [createPost, { error }] = useMutation(CREATE_POST, {
 		variables: values,
 		update(proxy, result) {
@@ -28,6 +29,10 @@ function PostForm(props) {
 			});
 			values.body = '';
 		},
+		onError(err) {
+			//setError(err.graphQLErrors[0].extensions.exception.stacktrace[0])
+			console.log(err.graphQLErrors[0].extensions.exception.stacktrace[0])
+		},
 		refetchQueries: refetchPosts => [{ query: FETCH_POSTS_QUERY }]
 	});
 
@@ -37,27 +42,28 @@ function PostForm(props) {
 		createPost()
 		setSubmitted(true)
 	}
-	return (<>
-		<Form onSubmit={onSubmit} className={'post-form'}>
-			<Form.Field>
-				<Form.Input
-					placeholder='Your post'
-					name='body'
-					onChange={onChange}
-					value={values.body}
-				/>
-				<Button type='submit' color='teal'>Create</Button>
-			</Form.Field>
-		</Form>
-		{error &&
-			<div className="ui error message">
-				<ul>
-					<div></div>
-					{console.log(error)}
-				</ul>
-			</div>
-		}
-	</>
+	return (
+		<div className='form-container'>
+			<Form onSubmit={onSubmit} className={'post-form'}>
+				<Form.Field>
+					<Form.Input
+						placeholder='Your post'
+						name='body'
+						onChange={onChange}
+						value={values.body}
+						error={error ? true : false}
+					/>
+					<Button type='submit' color='teal'>Create</Button>
+				</Form.Field>
+			</Form>
+			{error && (
+				<div className="ui error message">
+					<ul className={'list'}>
+						<li style={{fontSize: "0.5em"}}>{JSON.stringify(error.graphQLErrors[0].message)}</li>
+					</ul>
+				</div>)
+			}
+		</div>
 	)
 }
 
