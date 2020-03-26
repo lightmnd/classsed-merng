@@ -3,6 +3,7 @@ import App from "./App";
 import ApolloClient from "apollo-client";
 import { InMemoryCache } from "apollo-cache-inmemory";
 import { createHttpLink } from "apollo-link-http";
+import { createUploadLink } from 'apollo-upload-client'
 import { ApolloProvider } from "@apollo/react-hooks";
 import { setContext } from 'apollo-link-context'
 
@@ -11,7 +12,9 @@ const httpLink = createHttpLink({
   uri: "http://localhost:5000"
 });
 
-const authLink  = setContext(() => {
+const upload = createUploadLink({ uri: "http://localhost:5000" });
+
+const authLink = setContext(() => {
   const token = localStorage.getItem('jwtToken')
   return {
     headers: {
@@ -21,7 +24,7 @@ const authLink  = setContext(() => {
 })
 
 const client = new ApolloClient({
-  link: authLink.concat(httpLink),
+  link: authLink.concat(httpLink, upload),
   cache: new InMemoryCache()
 });
 

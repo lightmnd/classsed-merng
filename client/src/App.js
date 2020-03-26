@@ -10,18 +10,20 @@ import "./App.css";
 import { AuthProvider } from './context/auth'
 import AuthRouter from './utils/AuthRouter'
 import { SubmittedCtx } from './components/PostForm';
+import SinglePost from './components/SinglePost'
 
 
 function App() {
   return (
     <AuthProvider>
-      <SubmittedCtx.Provider value={'okkkkkkkkk'}>
+      <SubmittedCtx.Provider>
         <Router>
           <Container>
             <MenuBar />
             <Route exact path="/" component={Home} />
             <AuthRouter exact path="/login" component={Login} />
             <AuthRouter exact path="/register" component={Register} />
+            <Route exact path='/posts/:postId' component={SinglePost} />
           </Container>
         </Router>
         </SubmittedCtx.Provider>

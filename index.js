@@ -1,6 +1,8 @@
 require('dotenv').config({ path: __dirname + '/.env' });
 const { ApolloServer, PubSub } = require('apollo-server');
 const mongoose = require('mongoose');
+const express = require("express");
+const path = require("path");
 
 const typeDefs = require('./graphql/typeDefs');
 const resolvers = require('./graphql/resolvers');
@@ -18,6 +20,8 @@ const server = new ApolloServer({
 	context: ({ req }) => ({ req, pubsub }),
 });
 
+const app = express();
+
 mongoose
 	.connect(MONGODB, { useNewUrlParser: true, useUnifiedTopology: true })
 	.then(() => {
@@ -26,6 +30,10 @@ mongoose
 	})
 	.then(res => {
 		console.log(`Server running at ${res.url}`);
+	})
+	.then(() => {
+		app.use("/images", express.static(path.join(__dirname, "../images")));
+		//server.applyMiddleware({ app });
 	})
 	.catch(err => {
 		console.error(err);

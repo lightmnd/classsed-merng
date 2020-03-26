@@ -1,10 +1,16 @@
-const { AuthenticationError, UserInputError } = require('apollo-server');
+const { AuthenticationError, UserInputError, ApolloServer, gql } = require('apollo-server-express');
+const { createWriteStream, existsSync, mkdirSync } = require("fs");
+const path = require("path");
+const files = [];
+
+console.log('FILES', files)
 
 const Post = require('../../models/Post');
 const checkAuth = require('../../util/check-auth');
 
 module.exports = {
   Query: {
+    files: () => files,
     async getPosts() {
       try {
         const posts = await Post.find().sort({ createdAt: -1 });
@@ -27,9 +33,25 @@ module.exports = {
     }
   },
   Mutation: {
+    async uploadFile(_, { file }) {
+      const { createReadStream, path } = await file;
+      file["path"] = file['renamedPath']
+      delete file['path']
+
+      await new Promise(res =>
+        createReadStream()
+          .pipe(
+            createWriteStream(path.join(__dirname, "../images", file['renamedPath'])))
+          .on("close", res)
+      );
+
+      files.push(file['renamedPath']);
+
+      return true;
+    },
     async createPost(_, { body }, context) {
       const user = checkAuth(context);
-
+      
       if (body.trim() === '') {
         throw new Error('Post body must not be empty');
       }
@@ -90,3 +112,5 @@ module.exports = {
     }
   }
 };
+
+existsSync(path.join(__dirname, "../images")) || mkdirSync(path.join(__dirname, "../images"));
