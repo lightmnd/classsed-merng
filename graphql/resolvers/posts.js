@@ -33,19 +33,18 @@ module.exports = {
     }
   },
   Mutation: {
-    async uploadFile(_, { file }) {
-      const { createReadStream, path } = await file;
-      file["path"] = file['renamedPath']
-      delete file['path']
-
+    uploadFile: async (_, { file }) => {
+      const { createReadStream, filename } = await file;
       await new Promise(res =>
         createReadStream()
-          .pipe(
-            createWriteStream(path.join(__dirname, "../images", file['renamedPath'])))
-          .on("close", res)
+        .pipe(
+            createWriteStream(path.join(__dirname, "../images", filename)))
+         .on("close", res)
       );
 
-      files.push(file['renamedPath']);
+      files.push(filename);
+
+      console.log('>>>>>>>>FILES', files)
 
       return true;
     },

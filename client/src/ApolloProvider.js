@@ -9,22 +9,23 @@ import { setContext } from 'apollo-link-context'
 
 
 const httpLink = createHttpLink({
-  uri: "http://localhost:5000"
+  uri: "http://localhost:4000"
 });
 
-const upload = createUploadLink({ uri: "http://localhost:5000" });
+const upload = createUploadLink({ uri: "http://localhost:4000/graphql" });
 
 const authLink = setContext(() => {
   const token = localStorage.getItem('jwtToken')
   return {
     headers: {
-      Authorization: token ? `Bearer ${token}` : ''
+      Authorization: token && `Bearer ${token}`
     }
   }
 })
 
 const client = new ApolloClient({
-  link: authLink.concat(httpLink, upload),
+  //link: authLink.concat(httpLink, upload),
+  link: upload.concat(authLink),
   cache: new InMemoryCache()
 });
 
