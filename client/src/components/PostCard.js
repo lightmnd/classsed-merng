@@ -53,9 +53,9 @@ function PostCard({ post: { id, body, createdAt, username, comments, likes, like
 					<div {...getRootProps()}>
 						<input {...getInputProps()} />
 						{isDragActive ? (
-							<p>Drop the files here ...</p>
+							<UserAvatar />
 						) : (
-								<p>Drag 'n' drop some files here, or click to select files</p>
+							<UserAvatar />
 							)}
 					</div>
 					{/* <Image
@@ -63,7 +63,7 @@ function PostCard({ post: { id, body, createdAt, username, comments, likes, like
 						size='mini'
 						src='https://react.semantic-ui.com/images/avatar/large/steve.jpg'
 					/> */}
-					<UserAvatar />
+					
 					<Card.Header>{username}</Card.Header>
 					<Card.Meta as={Link} to={user != null ? `/posts/${id}` : '/login'}>
 						{moment(createdAt).fromNow()}
