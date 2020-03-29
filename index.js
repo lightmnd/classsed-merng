@@ -1,5 +1,5 @@
 require('dotenv').config({ path: __dirname + '/.env' });
-const { ApolloServer, PubSub } = require('apollo-server');
+const { ApolloServer, PubSub } = require('apollo-server-express');
 const mongoose = require('mongoose');
 const express = require("express");
 const path = require("path");
@@ -26,15 +26,18 @@ mongoose
 	.connect(MONGODB, { useNewUrlParser: true, useUnifiedTopology: true })
 	.then(() => {
 		console.log('MongoDB Connected');
-		return server.listen({ port: PORT });
+		//return server.listen({ port: PORT });
+		return app.listen({ port: PORT });
 	})
 	.then(res => {
 		console.log(`Server running at ${res.url}`);
 	})
 	.then(() => {
-		app.use("/images", express.static(path.join(__dirname, "../images")));
-		//server.applyMiddleware({ app });
+		app.use("/images", express.static(path.join(__dirname, "/graphql/images")));
+		server.applyMiddleware({ app });
 	})
 	.catch(err => {
 		console.error(err);
 	});
+
+	
