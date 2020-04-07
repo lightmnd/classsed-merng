@@ -8,6 +8,7 @@ import gql from 'graphql-tag';
 import { useMutation } from '@apollo/react-hooks';
 import { useDropzone } from "react-dropzone";
 import { AVATAR_IMAGE_QUERY, UserAvatar } from './UserAvatar'
+import DeleteButton from './../components/DeleteButton'
 
 function PostCard({ post: { id, body, createdAt, username, comments, likes, likeCount, commentCount } }) {
 	//const { id, body, createdAt, username, comments, likes, likeCount, commentCount } = props.post;
@@ -33,9 +34,7 @@ function PostCard({ post: { id, body, createdAt, username, comments, likes, like
 	// }) {
 	// 	if (validity.valid) mutate({ variables: { file } })
 	// }
-
-
-
+	
 	// function likePost() {
 	// 	console.log('like!');
 	// }
@@ -88,9 +87,7 @@ function PostCard({ post: { id, body, createdAt, username, comments, likes, like
 						</Label>
 					</Button>
 					{user && user.username === username && (
-						<Button as='div' color='red' onClick={() => console.log('Delete post')} floated='right'>
-							<Icon name={'trash'} style={{ margin: 0 }} />
-						</Button>
+						<DeleteButton postId={id} />
 					)}
 				</Card.Content>
 			</Card>

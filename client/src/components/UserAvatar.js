@@ -6,8 +6,6 @@ import gql from 'graphql-tag';
 function UserAvatar() {
 
     const { data, loading } = useQuery(AVATAR_IMAGE_QUERY);
-    console.log('>>>>', data, loading)
-
     return (
         <>
             {loading ?
@@ -16,6 +14,7 @@ function UserAvatar() {
                 (
                     <Container>
                         {data.files.length > 0 ? data.files.map(x => (
+                            
                             <Image
                                 floated='right'
                                 size='mini'
@@ -25,11 +24,12 @@ function UserAvatar() {
                             />
                         ))
                             :
-                            <Image
-                                floated='right'
-                                size='mini'
-                                src='https://react.semantic-ui.com/images/avatar/large/steve.jpg'
-                            />
+                            <div>Add your image</div>
+                            // <Image
+                            //     floated='right'
+                            //     size='mini'
+                            //     src='https://react.semantic-ui.com/images/avatar/large/steve.jpg'
+                            // />
                         }
                     </Container>
                 )}

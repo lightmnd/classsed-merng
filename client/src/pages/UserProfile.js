@@ -1,21 +1,23 @@
-import React, { useState, useContext, useCallback } from "react";
-import { Form, Button, Card } from "semantic-ui-react";
+import React, { useState, useContext } from "react";
+import { Form, Button, List, Image } from "semantic-ui-react";
 import gql from "graphql-tag";
-import { useMutation } from "@apollo/react-hooks";
+import { useMutation, useQuery } from "@apollo/react-hooks";
 import { PromiseProvider } from "mongoose";
 import { useForm } from "./../utils/hooks";
 import { AuthContext } from "./../context/auth";
-import { useDropzone } from "react-dropzone";
-import { AVATAR_IMAGE_QUERY, UserAvatar } from "./../components/UserAvatar";
 
-function Register(props) {
+function UserProfile(props) {
   const context = useContext(AuthContext);
+  const { user } = context;
+  console.log(user);
   // const [values, setValues] = useState({
   // 	username: '',
   // 	email: '',
   // 	password: '',
   // 	confirmPassword: '',
   // });
+
+  const { data } = useQuery(AVATAR_IMAGE_QUERY);
 
   const initialState = {
     username: "",
@@ -44,18 +46,6 @@ function Register(props) {
     variables: values
   });
 
-  const [uploadFile] = useMutation(UPLOAD_FILE, {
-    refetchQueries: [{ query: AVATAR_IMAGE_QUERY }]
-  });
-
-  const onDrop = useCallback(
-    ([file]) => {
-      console.log("=>>>> FILE", file);
-      uploadFile({ variables: { file } });
-    },
-    [uploadFile]
-  );
-
   function register() {
     addNewUser();
   }
@@ -65,12 +55,50 @@ function Register(props) {
   // 	addNewUser();
   // };
 
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
-
   return (
+	user &&
     <div className="form-container">
+      <List>
+        <List.Item>
+          <List.Icon name="users" />
+          <List.Content>
+            {user.username}
+          </List.Content>
+        </List.Item>
+        <List.Item>
+          <List.Icon name="mail" />
+          <List.Content>
+            <a href="mailto:jack@semantic-ui.com">
+              {user.email}
+            </a>
+          </List.Content>
+        </List.Item>
+        <List.Item>
+          {data && data.files.length > 0
+            ? data.files.map(x =>
+                <Image
+                  floated="left"
+                  size="mini"
+                  key={x}
+                  src={`http://localhost:4000/images/${x}`}
+                  alt={x}
+                />
+              )
+            : <Image
+                floated="left"
+                size="mini"
+                src="https://react.semantic-ui.com/images/avatar/large/steve.jpg"
+              />}
+        </List.Item>
+      </List>
+
+      <hr />
+      <hr />
+      <hr />
+
+      {/* Update User info */}
       <Form onSubmit={onSubmit} noValidate className={loading ? "loading" : ""}>
-        <h1>Register</h1>
+        <h1>Update your info</h1>
         <Form.Input
           label="Username"
           placeholder="Username.."
@@ -107,14 +135,6 @@ function Register(props) {
           onChange={onChange}
           error={errors.confirmPassword ? true : false}
         />
-        <Card>
-          <Card.Content>
-            <div {...getRootProps()}>
-              <input {...getInputProps()} />
-              {isDragActive ? <UserAvatar /> : <UserAvatar />}
-            </div>
-          </Card.Content>
-        </Card>
         <Button type="submit" primary>
           Register
         </Button>
@@ -134,6 +154,12 @@ function Register(props) {
     </div>
   );
 }
+
+const AVATAR_IMAGE_QUERY = gql`
+  {
+    files
+  }
+`;
 
 const REGISTER_USER = gql`
   mutation register(
@@ -159,10 +185,4 @@ const REGISTER_USER = gql`
   }
 `;
 
-const UPLOAD_FILE = gql`
-  mutation UploadFile($file: Upload!) {
-    uploadFile(file: $file)
-  }
-`;
-
-export default Register;
+export default UserProfile;

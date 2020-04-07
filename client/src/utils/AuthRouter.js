@@ -9,9 +9,9 @@ function AuthRouter({ component: Component, ...rest }) {
     return <Route
         {...rest}
         render={props =>
-            user ?
-                <Redirect to='/' /> : <Component {...props} />
+            user ? <Redirect to='/' /> : <Component {...props} />
         }
+       
     />
 }
 
