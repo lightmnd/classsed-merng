@@ -47,7 +47,6 @@ module.exports = gql`
   }
   type Mutation {
     uploadFile(file: Upload!): Boolean
-    singleUpload(file: Upload!): File!
     register(registerInput: RegisterInput): User!
     login(username: String!, password: String!): User!
     createPost(body: String!): Post!
