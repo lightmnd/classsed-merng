@@ -1,11 +1,14 @@
-import React from 'react'
+import React, {useContext} from 'react'
 import { Image, Container } from 'semantic-ui-react';
 import { useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
+import { AuthContext } from './../context/auth'
 
-function UserAvatar() {
-
+function UserAvatar(props) {
+    const { user } = useContext(AuthContext)
     const { data, loading } = useQuery(AVATAR_IMAGE_QUERY);
+
+    console.log(user, props.username, data)
     return (
         <>
             {loading ?
@@ -13,8 +16,8 @@ function UserAvatar() {
                 :
                 (
                     <Container>
-                        {data.files.length > 0 ? data.files.map(x => (
-                            
+                        {user && user.username === props.username && 
+                        data.files.length > 0 ? data.files.map((x) => (
                             <Image
                                 floated='right'
                                 size='mini'
@@ -24,7 +27,7 @@ function UserAvatar() {
                             />
                         ))
                             :
-                            <div>Add your image</div>
+                            user && user.username === props.username && <div>Add your image</div>
                             // <Image
                             //     floated='right'
                             //     size='mini'
